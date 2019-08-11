@@ -4,6 +4,7 @@ import (
 	"github.com/reiver/go-digestfs/driver"
 
 	"crypto/sha1"
+	"strings"
 	"sync"
 )
 
@@ -59,6 +60,16 @@ func (receiver *SHA1) Open(algorithm string, digest []byte) (digestfs_driver.Con
 	}
 
 	return digestfs_driver.StringContent(value), nil
+}
+
+func (receiver *SHA1) OpenLocation(location string) (digestfs_driver.Content, error) {
+	const prefix string = "@^"
+	if !strings.HasPrefix(location, prefix) {
+		return nil, digestfs_driver.ErrBadLocation(location)
+	}
+	digest := location[len(prefix):]
+
+	return receiver.Open("SHA-1", []byte(digest))
 }
 
 func (receiver *SHA1) Store(content []byte) ([sha1.Size]byte, error) {

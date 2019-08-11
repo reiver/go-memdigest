@@ -4,6 +4,7 @@ import (
 	"github.com/reiver/go-memdigest"
 
 	"github.com/reiver/go-digestfs"
+	"github.com/reiver/go-digestfs/driver"
 
 	"crypto/sha1"
 	"encoding/hex"
@@ -13,6 +14,15 @@ import (
 
 	"testing"
 )
+
+func TestSHA1AsDigestFSDriverMountPoint(t *testing.T) {
+
+	var mountpoint digestfs_driver.MountPoint = new(memdigest.SHA1) // THIS IS WHAT ACTUALLY MATTERS!
+
+	if nil == mountpoint {
+		t.Error("This should never happen.")
+	}
+}
 
 func TestSHA1(t *testing.T) {
 
