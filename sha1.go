@@ -9,6 +9,16 @@ import (
 	"sync"
 )
 
+func init() {
+	const name string = "memdigest.SHA1"
+
+	var mounter digestfs_driver.Mounter = digestfs_driver.MounterFunc(func(...interface{}) (digestfs_driver.MountPoint, error){
+		return new(SHA1), nil
+	})
+
+	digestfs_driver.Registry.Register(mounter, name)
+}
+
 type SHA1 struct {
 	mutex sync.RWMutex
 	data map[[sha1.Size]byte]string
