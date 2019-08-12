@@ -72,6 +72,35 @@ func (receiver *SHA1) OpenLocation(location string) (digestfs_driver.Content, er
 	return receiver.Open("SHA-1", []byte(digest))
 }
 
+// Store stores ‘content’ and returns the SHA-1 digest of ‘content’.
+//
+// Example
+//
+// Here is an example of it being used:
+//
+//	var mem *memdigest.SHA1
+//	
+//	// ...
+//	
+//	var content []byte = []byte("The request has been fulfilled and resulted in a new resource being created.")
+//	
+//	// ...
+//	
+//	digest, err := mem.Store(content)
+//
+// The returned digest is in binary form, not hexadecimal.
+//
+// In the case of our example, it will be:
+//
+//	[64]byte{0x0c, 0xe9, 0xff, 0x3b, 0x12, 0xaf, 0xdb, 0x31, 0x61, 0x75, 0x1e, 0x3a, 0xb4, 0x49, 0x87, 0x62, 0x95, 0x23, 0x63, 0x3d}
+//
+// If you want to convert it to hexadecimal, you can do so with code such as:
+//
+//	hexadecimalDigest := fmt.Sprintf("%x", digest)
+//
+// Which will return the string:
+//
+//	"0ce9ff3b12afdb3161751e3ab44987629523633d"
 func (receiver *SHA1) Store(content []byte) ([sha1.Size]byte, error) {
 	if nil == receiver {
 		return [sha1.Size]byte{}, errNilReceiver
