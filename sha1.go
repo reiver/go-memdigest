@@ -4,6 +4,7 @@ import (
 	"github.com/reiver/go-digestfs/driver"
 
 	"crypto/sha1"
+	"encoding/hex"
 	"strings"
 	"sync"
 )
@@ -41,7 +42,7 @@ func (receiver *SHA1) Load(digest []byte) (string, bool) {
 	return value, true
 }
 
-func (receiver *SHA1) Open(algorithm string, digest []byte) (digestfs_driver.Content, error) {
+func (receiver *SHA1) Open(algorithm string, digest string) (digestfs_driver.Content, error) {
 	if nil == receiver {
 		return nil, digestfs_driver.ErrContentNotFound(algorithm, digest)
 	}
@@ -50,11 +51,16 @@ func (receiver *SHA1) Open(algorithm string, digest []byte) (digestfs_driver.Con
 		return nil, digestfs_driver.ErrUnsupportedAlgorithm(algorithm)
 	}
 
-	if sha1.Size != len(digest) {
+	binaryDigest, err := hex.DecodeString(digest)
+	if nil != err {
 		return nil, digestfs_driver.ErrContentNotFound(algorithm, digest)
 	}
 
-	value, found := receiver.Load(digest)
+	if sha1.Size != len(binaryDigest) {
+		return nil, digestfs_driver.ErrContentNotFound(algorithm, digest)
+	}
+
+	value, found := receiver.Load(binaryDigest)
 	if !found {
 		return nil, digestfs_driver.ErrContentNotFound(algorithm, digest)
 	}
@@ -69,7 +75,7 @@ func (receiver *SHA1) OpenLocation(location string) (digestfs_driver.Content, er
 	}
 	digest := location[len(prefix):]
 
-	return receiver.Open("SHA-1", []byte(digest))
+	return receiver.Open("SHA-1", digest)
 }
 
 // Store stores ‘content’ and returns the SHA-1 digest of ‘content’.
