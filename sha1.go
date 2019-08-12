@@ -10,6 +10,10 @@ import (
 	"sync"
 )
 
+const (
+	algorithmSHA1 string = "SHA-1"
+)
+
 func init() {
 	const name string = "memdigest.SHA1"
 
@@ -69,7 +73,7 @@ func (receiver *SHA1) Open(algorithm string, digest string) (digestfs_driver.Con
 		return nil, digestfs_driver.ErrContentNotFound(algorithm, digest)
 	}
 
-	if "SHA-1" != algorithm {
+	if algorithmSHA1 != algorithm {
 		return nil, digestfs_driver.ErrUnsupportedAlgorithm(algorithm)
 	}
 
@@ -98,7 +102,7 @@ func (receiver *SHA1) OpenLocation(location string) (digestfs_driver.Content, er
 	}
 	digest := location[len(prefix):]
 
-	return receiver.Open("SHA-1", digest)
+	return receiver.Open(algorithmSHA1, digest)
 }
 
 // Store stores ‘content’ and returns the SHA-1 digest of ‘content’.
