@@ -91,6 +91,19 @@ func (receiver *SHA1) Store(content []byte) ([sha1.Size]byte, error) {
 	return key, nil
 }
 
+// Unmount makes *memdigest.SHA1 fit the digestfs_driver.MountPoint interface.
+//
+// Unmount will never return an error, but will (conceptually) removed all content it was previously storing.
+//
+// Example
+//
+// Here is an example of it being used:
+//
+//	var mem *memdigest.SHA1
+//	
+//	// ...
+//	
+//	err := mem.Unmount()
 func (receiver *SHA1) Unmount() error {
 	if nil == receiver {
 		return nil
