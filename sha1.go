@@ -68,6 +68,7 @@ func (receiver *SHA1) Open(algorithm string, digest string) (digestfs_driver.Con
 	return digestfs_driver.StringContent(value), nil
 }
 
+// OpenLocation makes *memdigest.SHA1 fit the digestfs_driver.MountPoint interface.
 func (receiver *SHA1) OpenLocation(location string) (digestfs_driver.Content, error) {
 	const prefix string = "@^"
 	if !strings.HasPrefix(location, prefix) {
