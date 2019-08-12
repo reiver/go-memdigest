@@ -40,6 +40,21 @@ type SHA1 struct {
 	data map[[sha1.Size]byte]string
 }
 
+func (receiver *SHA1) Create(p []byte) (algorithm string, digest string, err error) {
+	if nil == receiver {
+		return algorithmSHA1, "", errNilReceiver
+	}
+
+	binaryDigest, err := receiver.Store(p)
+	if nil != err {
+		return algorithmSHA1, "", err
+	}
+
+	digest = fmt.Sprintf("%x", binaryDigest)
+
+	return algorithmSHA1, digest, nil
+}
+
 func (receiver *SHA1) Load(digest []byte) (string, bool) {
 	if nil == receiver {
 		return "", false
