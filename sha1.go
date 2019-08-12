@@ -5,6 +5,7 @@ import (
 
 	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
 	"strings"
 	"sync"
 )
@@ -12,8 +13,19 @@ import (
 func init() {
 	const name string = "memdigest.SHA1"
 
-	var mounter digestfs_driver.Mounter = digestfs_driver.MounterFunc(func(...interface{}) (digestfs_driver.MountPoint, error){
-		return new(SHA1), nil
+	var mounter digestfs_driver.Mounter = digestfs_driver.MounterFunc(func(args ...interface{}) (digestfs_driver.MountPoint, error){
+		if expected, actual := 1, len(args); expected != actual {
+			return nil, fmt.Errorf("memdigest: Wrong Number Of Arguments: expected %d, but actually got %d", expected, actual)
+		}
+
+		arg0 := args[0]
+
+		mem, casted := arg0.(*SHA1)
+		if !casted {
+			return nil, fmt.Errorf("memdigest: Wrong Type: expected *memdigest.SHA1, but actually got %T", arg0)
+		}
+
+		return mem, nil
 	})
 
 	digestfs_driver.Registry.Register(mounter, name)
