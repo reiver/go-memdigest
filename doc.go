@@ -24,25 +24,25 @@ For example:
 	
 	// ...
 	
-	// algorithm == "SHA-1"
+	// algorithm == "SHA-1.hexadecimal"
 	// digest    == "70cc03f611f457342c7bf69e7bd3ca0eabf17d75"
 	algorithm, digest, err := mountpoint.Create([]byte("The request has been accepted for processing, but the processing has not been completed."))
 	
 	// ...
 	
-	// algorithm == "SHA-1"
+	// algorithm == "SHA-1.hexadecimal"
 	// digest    == "f58802bc6adbe90281759682fbcfed6045b03a26"
 	algorithm, digest, err := mountpoint.Create([]byte("The server has fulfilled the request but does not need to return an entity-body, and might want to return updated metainformation."))
 	
 	// ...
 	
-	// algorithm == "SHA-1"
+	// algorithm == "SHA-1.hexadecimal"
 	// digest    == "59d4cf28c9831ade812e9ba3919040baedea9266"
 	algorithm, digest, err := mountpoint.Create([]byte("The server encountered an unexpected condition which prevented it from fulfilling the request."))
 	
 	// ...
 	
-	content, err := mountpoint.Open("SHA-1", "c0535e4be2b79ffd93291305436bf889314e4a3faec05ecffcbb7df31ad9e51a")
+	content, err := mountpoint.Open("SHA-1.hexadecimal", "c0535e4be2b79ffd93291305436bf889314e4a3faec05ecffcbb7df31ad9e51a")
 	if nil != err {
 		return err
 	}

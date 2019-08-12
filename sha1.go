@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	algorithmSHA1 string = "SHA-1"
+	algorithmSHA1 string = "SHA-1.hexadecimal"
 )
 
 func init() {
