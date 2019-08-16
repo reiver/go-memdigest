@@ -170,7 +170,7 @@ func (receiver *SHA1) Store(content []byte) ([sha1.Size]byte, error) {
 
 // Unmount makes *memdigest.SHA1 fit the digestfs_driver.MountPoint interface.
 //
-// Unmount will never return an error, but will (conceptually) removed all content it was previously storing.
+// Unmount will never return an error, but will (conceptually) remove all content it was previously storing.
 //
 // Example
 //
