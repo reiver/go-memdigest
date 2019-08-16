@@ -105,7 +105,7 @@ func TestSHA1(t *testing.T) {
 			}
 
 			{
-				content, err := mem.Open("SHA-1", fmt.Sprintf("%x", nonExistentDigest))
+				content, err := mem.Open("SHA-1", string(nonExistentDigest[:]))
 				if nil == err {
 					t.Errorf("For test #%d, expected an error, but did not actually get one: %#v", testNumber, err)
 					continue
@@ -164,7 +164,13 @@ func TestSHA1(t *testing.T) {
 			}
 
 			{
-				content, err := mem.Open("SHA-1", testDatum.Expected)
+				digest, err := hex.DecodeString(testDatum.Expected)
+				if nil != err {
+					t.Errorf("For test #%d and datum #%d, did not expect an error, but actually got one: (%T) %q", testNumber, testDatumNumber, err, err)
+					continue
+				}
+
+				content, err := mem.Open("SHA-1", string(digest))
 				if nil != err {
 					t.Errorf("For test #%d, did not expect an error, but actually got one: (%T) %q", testNumber, err, err)
 					continue

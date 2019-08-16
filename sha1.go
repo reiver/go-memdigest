@@ -4,7 +4,6 @@ import (
 	"github.com/reiver/go-digestfs/driver"
 
 	"crypto/sha1"
-	"encoding/hex"
 	"fmt"
 	"strings"
 	"sync"
@@ -78,14 +77,12 @@ func (receiver *SHA1) Create(p []byte) (algorithm string, digest string, err err
 		return algorithmSHA1, "", errNilReceiver
 	}
 
-	binaryDigest, err := receiver.Store(p)
+	digest20, err := receiver.Store(p)
 	if nil != err {
 		return algorithmSHA1, "", err
 	}
 
-	digest = fmt.Sprintf("%x", binaryDigest)
-
-	return algorithmSHA1, digest, nil
+	return algorithmSHA1, string(digest20[:]), nil
 }
 
 func (receiver *SHA1) Load(digest []byte) (string, bool) {
@@ -125,16 +122,15 @@ func (receiver *SHA1) Open(algorithm string, digest string) (digestfs_driver.Con
 		return nil, digestfs_driver.ErrUnsupportedAlgorithm(algorithm)
 	}
 
-	binaryDigest, err := hex.DecodeString(digest)
-	if nil != err {
+	if sha1.Size != len(digest) {
 		return nil, digestfs_driver.ErrContentNotFound(algorithm, digest)
 	}
 
-	if sha1.Size != len(binaryDigest) {
-		return nil, digestfs_driver.ErrContentNotFound(algorithm, digest)
-	}
+	var d [sha1.Size]byte
 
-	value, found := receiver.Load(binaryDigest)
+	copy(d[:], digest)
+
+	value, found := receiver.Load(d[:])
 	if !found {
 		return nil, digestfs_driver.ErrContentNotFound(algorithm, digest)
 	}
