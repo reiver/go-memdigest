@@ -4,6 +4,7 @@ import (
 	"github.com/reiver/go-digestfs/driver"
 
 	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"strings"
 	"sync"
@@ -140,13 +141,23 @@ func (receiver *SHA1) Open(algorithm string, digest string) (digestfs_driver.Con
 
 // OpenLocation makes *memdigest.SHA1 fit the digestfs_driver.MountPoint interface.
 func (receiver *SHA1) OpenLocation(location string) (digestfs_driver.Content, error) {
-	const prefix string = "@^"
+	const prefix string = "memdigest:sha-1:hexadecimal("
+	const suffix string = ")/0"
+
 	if !strings.HasPrefix(location, prefix) {
 		return nil, digestfs_driver.ErrBadLocation(location)
 	}
-	digest := location[len(prefix):]
+	if !strings.HasSuffix(location, suffix) {
+		return nil, digestfs_driver.ErrBadLocation(location)
+	}
+	digestHexadecimal := location[len(prefix):len(location)-len(suffix)]
 
-	return receiver.Open(algorithmSHA1, digest)
+	digest, err := hex.DecodeString(digestHexadecimal)
+	if nil != err {
+		return nil, digestfs_driver.ErrBadLocation(location)
+	}
+
+	return receiver.Open(algorithmSHA1, string(digest))
 }
 
 // Store stores ‘content’ and returns the SHA-1 digest of ‘content’.
